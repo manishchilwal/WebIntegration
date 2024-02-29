@@ -73,9 +73,8 @@
             gap: 10px;
         }
 
-        .button-container>* {
-            flex: 1 0 calc(33.33% - 20px);
-            /* Three items per row with gap of 20px */
+        .button-container > * {
+            flex: 1 0 calc(33.33% - 20px); /* Three items per row with gap of 20px */
             max-width: calc(33.33% - 20px);
         }
 
@@ -109,8 +108,7 @@
             text-align: right;
         }
 
-        input,
-        select {
+        input, select {
             padding: 8px;
             border-radius: 5px;
             border: 1px solid #ccc;
@@ -157,11 +155,14 @@
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
+        
+        <label for="number">Phone No:</label>
+        <input type="number" id="number" name="number" required>
 
         <label for="gender">Gender:</label>
         <select id="gender" name="gender" required>
-            <option value="M">Male</option>
-            <option value="F">Female</option>
+            <option value="M">M</option>
+            <option value="F">F</option>
         </select>
     </form><br>
 
@@ -171,7 +172,7 @@
         <button class="button" id="ipfalse" onclick="ipfalse()">IP FALSE</button>
         <button class="button" id="iptrue" onclick="iptrue()">IP TRUE</button>
         <button class="button" id="login" onclick="profilepush()">ProfilePush</button>
-        <button class="button" id="loc" onclick="pushnotif()">Send Notification</button>
+        <button class="button" id="loc" onclick="pushnotif()">Enable Notification</button>
         <button class="button" id="showid" onclick="showctid()">Show CT ID </button>
         <button class="button" id="clearid" onclick="clear()">Clear CT ID </button>
         <button class="button" id="popup" onclick="popup()">Web Pop-up </button>
@@ -181,18 +182,21 @@
 
 
     <script>
+        
 
         let onuserlogin = () => {
-            var name, identity, email, gender;
+            var name, identity, email, gender,phone;
             name = document.getElementById('name').value;
             identity = document.getElementById('identity').value;
             email = document.getElementById('email').value;
+            phone = document.getElementById('number').value;
             gender = document.getElementById('gender').value;
             clevertap.onUserLogin.push({
                 "Site": {
                     "Name": name,
                     "Identity": identity,
                     "Email": email,
+                    "Phone": phone,
                     "Gender": gender,
                     "Sign Up": new Date(),
                     "MSG-email": true,
@@ -236,7 +240,7 @@
 
 
 
-        let pushprofile = () => {
+        let profilepush = () => {
             clevertap.profile.push({
                 "Site": {
                     "Customer Type": "Silver",
@@ -254,24 +258,17 @@
 
         let clear = () => {
             clevertap.clear();
-            if ('caches' in window) {
-                // Open the cache
-                caches.open('my-cache').then(cache => {
-                    // Clear all entries from the cache
-                    cache.keys().then(keys => {
-                        keys.forEach(key => {
-                            cache.delete(key);
-                        });
-                        console.log('Cache cleared successfully');
-                    }).catch(error => {
-                        console.error('Error clearing cache:', error);
-                    });
-                }).catch(error => {
-                    console.error('Error opening cache:', error);
-                });
-            } else {
-                console.error('Cache Storage API is not supported in this browser');
+            var cookies = document.cookie.split(";");
+
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+
+                // Set the expiry date of the cookie to a past date
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
             }
+
         };
     </script>
 
