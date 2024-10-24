@@ -1,335 +1,364 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CT Testing</title>
 
     <script type="text/javascript">
-        var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
-        // replace with the CLEVERTAP_ACCOUNT_ID with the actual ACCOUNT ID value from your Dashboard -> Settings page
-        clevertap.account.push({ "id": "R5K-486-ZW7Z" });
-        clevertap.privacy.push({ optOut: false }); // set the flag to true, if the user of the device opts out of sharing their data
-        clevertap.privacy.push({ useIP: false }); // set the flag to true, if the user agrees to share their IP data
-        clevertap.dismissSpamControl = true;
-        (function () {
-            var wzrk = document.createElement('script');
-            wzrk.type = 'text/javascript';
-            wzrk.async = true;
-            wzrk.src = ('https:' == document.location.protocol ? 'https://d2r1yp2w7bby2u.cloudfront.net' : 'http://static.clevertap.com') + '/js/clevertap.min.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(wzrk, s);
-        })();
+      var clevertap = {
+        event: [],
+        profile: [],
+        account: [],
+        onUserLogin: [],
+        notifications: [],
+        privacy: [],
+      };
+      clevertap.account.push({ id: "R5K-486-ZW7Z" });
+      clevertap.privacy.push({ optOut: false });
+      clevertap.privacy.push({ useIP: false });
+      clevertap.dismissSpamControl = true;
+      (function () {
+        var wzrk = document.createElement("script");
+        wzrk.type = "text/javascript";
+        wzrk.async = true;
+        wzrk.src =
+          ("https:" == document.location.protocol
+            ? "https://d2r1yp2w7bby2u.cloudfront.net"
+            : "http://static.clevertap.com") + "/js/clevertap.min.js";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(wzrk, s);
+      })();
     </script>
 
     <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
 
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyDXtM7vUppLjsIQblBYJ6ko3vRZmOcFLSQ",
-            authDomain: "application-13302.firebaseapp.com",
-            databaseURL: "https://application-13302-default-rtdb.firebaseio.com",
-            projectId: "application-13302",
-            storageBucket: "application-13302.appspot.com",
-            messagingSenderId: "92634320339",
-            appId: "1:92634320339:web:b22f11b947cc88d0bff326",
-            measurementId: "G-WFZ3M0LT6J"
-        };
+      const firebaseConfig = {
+        apiKey: "AIzaSyDXtM7vUppLjsIQblBYJ6ko3vRZmOcFLSQ",
+        authDomain: "application-13302.firebaseapp.com",
+        projectId: "application-13302",
+        storageBucket: "application-13302.appspot.com",
+        messagingSenderId: "92634320339",
+        appId: "1:92634320339:web:b22f11b947cc88d0bff326",
+        measurementId: "G-WFZ3M0LT6J",
+      };
 
-        function nativeDisplay() {
-            if (window.your_variable_name_here) {
-                // Call Android interface             
-                my_webview.pushEvent("Native Display");
-            } else {
-                clevertap.event.push("Native Display");
-            }
+      function nativeDisplay() {
+        if (window.my_webview) {
+          my_webview.pushEvent("Native Display");
+        } else if (
+          window.webkit &&
+          window.webkit.messageHandlers &&
+          window.webkit.messageHandlers.iOS
+        ) {
+          window.webkit.messageHandlers.iOS.postMessage({
+            action: "recordEventWithProps",
+            event: "Native Display",
+          });
+        } else {
+          clevertap.event.push("Native Display");
         }
-        document.addEventListener("DOMContentLoaded", nativeDisplay);
+      }
+      document.addEventListener("DOMContentLoaded", nativeDisplay);
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
     </script>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 20px;
+      }
 
-        #native {
-            margin-bottom: 20px;
-            text-align: center;
-            background-color: #ddd;
-            padding: 10px;
-        }
+      #native {
+        margin-bottom: 20px;
+        text-align: center;
+        background-color: #ddd;
+        padding: 10px;
+      }
 
-        .button-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
+      .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+      }
 
-        .button-container > * {
-            flex: 1 0 calc(33.33% - 20px); /* Three items per row with gap of 20px */
-            max-width: calc(33.33% - 20px);
-        }
+      .button-container > * {
+        flex: 1 0 calc(33.33% - 20px); /* Three items per row with gap of 20px */
+        max-width: calc(33.33% - 20px);
+      }
 
-        .button {
-            padding: 10px 20px;
-            font-size: 16px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: white;
-            background-color: #4CAF50;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-        }
+      .button {
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: white;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+      }
 
-        .button:hover {
-            background-color: #45a049;
-        }
+      .button:hover {
+        background-color: #45a049;
+      }
 
-        form {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-        }
+      form {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
 
-        label {
-            width: 100px;
-            text-align: right;
-        }
+      label {
+        width: 100px;
+        text-align: right;
+      }
 
-        input, select {
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            flex: 1;
-            max-width: calc(50% - 20px);
-        }
+      input,
+      select {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        flex: 1;
+        max-width: calc(50% - 20px);
+      }
 
-        button[type="button"] {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            width: 100%;
-        }
+      button[type="button"] {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        width: 100%;
+      }
 
-        button[type="button"]:hover {
-            background-color: #0056b3;
-        }
+      button[type="button"]:hover {
+        background-color: #0056b3;
+      }
 
-        h1 {
-            width: 100%;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+      h1 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+      }
     </style>
-</head>
-
-<body>
-    <div id="native">
-        This is the native content.
-    </div>
-
+  </head>
+  <body>
+    <div id="native">This is the native content.</div>
     <h1>Web Integration</h1>
 
-    <form id="userInfoForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="identity">Identity:</label>
-        <input type="text" id="identity" name="identity" required>
-
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="number">Phone No:</label>
-        <input type="number" id="number" name="number" required>
-
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender" required>
-            <option value="M">M</option>
-            <option value="F">F</option>
-        </select>
-    </form>
-    <br>
+    <!-- Your form here -->
 
     <div class="button-container">
-        <button class="button" id="event" onclick="pushEvent()">Push Event</button>
-        <button class="button" id="login" onclick="onuserlogin()">OnUserLogin</button>
-        <button class="button" id="ipfalse" onclick="ipfalse()">IP FALSE</button>
-        <button class="button" id="iptrue" onclick="iptrue()">IP TRUE</button>
-        <button class="button" id="profilepush" onclick="profilepush()">ProfilePush</button>
-        <button class="button" id="loc" onclick="pushnotif()">Enable Notification</button>
-        <button class="button" id="showid" onclick="showctid()">Show CT ID</button>
-        <button class="button" id="clearid" onclick="clear()">Clear CT ID</button>
-        <button class="button" id="popup" onclick="popup()">Web Pop-up</button>
-        <button class="button" id="push" onclick="pushnotification()">Web Push</button>
+      <button class="button" onclick="pushEvent()">Push Event</button>
+      <button class="button" onclick="onuserlogin()">OnUserLogin</button>
+      <button class="button" onclick="ipfalse()">IP FALSE</button>
+      <button class="button" onclick="iptrue()">IP TRUE</button>
+      <button class="button" onclick="profilepush()">ProfilePush</button>
+      <button class="button" onclick="pushnotif()">Enable Notification</button>
+      <button class="button" onclick="showctid()">Show CT ID</button>
+      <button class="button" onclick="clear()">Clear CT ID</button>
+      <button class="button" onclick="popup()">Web Pop-up</button>
+      <button class="button" onclick="pushnotification()">Web Push</button>
     </div>
-    <h2 id="test"></h2>
 
     <script>
-        let onuserlogin = () => {
-            const userInfo = {
-                "Site": {
-                    "Name": document.getElementById('name').value,
-                    "Identity": document.getElementById('identity').value,
-                    "Email": document.getElementById('email').value,
-                    "Phone": document.getElementById('number').value,
-                    "Gender": document.getElementById('gender').value,
-                    "Sign Up": new Date(),
-                    "MSG-email": true,
-                    "MSG-push": true,
-                    "MSG-sms": true,
-                    "MSG-whatsapp": true,
-                },
-            };
-            if (window.my_webview) {
-                my_webview.onUserLogin(userInfo);
-            } else {
-                clevertap.onUserLogin.push(userInfo);
-            }
+      function pushEvent() {
+        const props = {
+          "Product name": "Casio Chronograph Watch",
+          Category: "Mens Accessories",
+          Price: 59.99,
+          Date: new Date(),
         };
-
-        let pushEvent = () => {
-            if (window.my_webview) {
-                my_webview.pushEvent("Products Viewed", {
-                    "Product name": "Casio Chronograph Watch",
-                    "Category": "Mens Accessories",
-                    "Price": 59.99,
-                    "Date": new Date()
-                });
-            } else {
-                clevertap.event.push("Products Viewed", {
-                    "Product name": "Casio Chronograph Watch",
-                    "Category": "Mens Accessories",
-                    "Price": 59.99,
-                    "Date": new Date()
-                });
-            }
-        };
-
-        let popup = () => {
-            if (window.my_webview) {
-                my_webview.pushEvent("Web Pop-up");
-            } else {
-                clevertap.event.push("Web Pop-up");
-            }
-        };
-
-        let pushnotification = () => {
-            if (window.my_webview) {
-                my_webview.pushEvent("Web Push Notification");
-            } else {
-                clevertap.event.push("Web Push Notification");
-            }
-        };
-
-        let ipfalse = () => {
-            clevertap.privacy.push({ useIP: false });
-            clevertap.event.push("useIP: false");
-        };
-
-        let iptrue = () => {
-            clevertap.privacy.push({ useIP: true });
-            clevertap.event.push("useIP: true");
-        };
-
-        let profilepush = () => {
-            if (window.your_variable_name_here) {
-                // Call Android interface             
-                my_webview.pushProfile({
-                    "Site": {
-                        "Customer Type": "Silver",
-                        "Prefered Language": "English"
-                    }
-                });
-            }
-            clevertap.profile.push({
-                "Site": {
-                    "Customer Type": "Silver",
-                    "Prefered Language": "English"
-                }
-            });
-        };
-
-        let showctid = () => {
-            if (window.my_webview) {
-                var ctid = my_webview.getCleverTapID();
-            } else {
-                var ctid = clevertap.getCleverTapID();
-            }
-            document.getElementById("test").innerHTML = ctid;
-        };
-
-        let clear = () => {
-            clevertap.clear();
-            var cookies = document.cookie.split(";");
-
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i];
-                var eqPos = cookie.indexOf("=");
-                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-
-                // Set the expiry date of the cookie to a past date
-                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
-            }
-        };
-    </script>
-
-    <script>
-        let pushnotif = () => {
-            clevertap.notifications.push({
-                "titleText": "Would you like to receive Push Notifications?",
-                "bodyText": "We promise to only send you relevant content and give you updates on your transactions",
-                "okButtonText": "Sign me up!",
-                "rejectButtonText": "No thanks",
-                "okButtonColor": "#F28046",
-                "askAgainTimeInSeconds": 5,
-            });
-        };
-    </script>
-
-    <script>
-        function handleTabClosing(event) {
-            // Trigger your event here
-            console.log("Tab is closing...");
-            clevertap.event.push("Web Exit");
-            // Set a custom message to be displayed in some browsers
-            event.returnValue = "Are you sure you want to leave this page?";
+        if (window.my_webview) {
+          my_webview.pushEvent("Product Viewed", JSON.stringify(props));
+        } else if (
+          window.webkit &&
+          window.webkit.messageHandlers &&
+          window.webkit.messageHandlers.iOS
+        ) {
+          window.webkit.messageHandlers.iOS.postMessage({
+            action: "recordEventWithProps",
+            event: "Product Viewed",
+            properties: props,
+          });
+        } else {
+          clevertap.event.push("Product Viewed", props);
         }
-        window.addEventListener('beforeunload', handleTabClosing);
+      }
 
-        const closeButton = document.querySelector('.close-button');
-        closeButton.addEventListener('click', () => {
-            // Remove the beforeunload event listener when the button is clicked
-            window.removeEventListener('beforeunload', handleTabClosing);
-            // Close the tab (this may not work in all browsers)
-            window.close();
+      function onuserlogin() {
+        const userInfo = {
+          Site: {
+            Name: document.getElementById("name").value,
+            Identity: document.getElementById("identity").value,
+            Email: document.getElementById("email").value,
+            Phone: document.getElementById("number").value,
+            Gender: document.getElementById("gender").value,
+            "Sign Up": new Date(),
+            "MSG-email": true,
+            "MSG-push": true,
+            "MSG-sms": true,
+            "MSG-whatsapp": true,
+          },
+        };
+        if (window.my_webview) {
+          my_webview.onUserLogin(JSON.stringify(userInfo));
+        } else if (
+          window.webkit &&
+          window.webkit.messageHandlers &&
+          window.webkit.messageHandlers.iOS
+        ) {
+          window.webkit.messageHandlers.iOS.postMessage({
+            action: "onUserLogin",
+            properties: userInfo,
+          });
+        } else {
+          clevertap.onUserLogin.push(userInfo);
+        }
+      }
+
+      function popup() {
+        if (window.my_webview) {
+          my_webview.pushEvent("Web Pop-up");
+        } else if (
+          window.webkit &&
+          window.webkit.messageHandlers &&
+          window.webkit.messageHandlers.iOS
+        ) {
+          window.webkit.messageHandlers.iOS.postMessage({
+            action: "recordEventWithProps",
+            event: "Web Pop-up",
+          });
+        } else {
+          clevertap.event.push("Web Pop-up");
+        }
+      }
+
+      let pushnotification = () => {
+        const eventName = "Web Push Notification";
+
+        // Android: Use `my_webview` to call the native interface
+        if (window.my_webview) {
+          my_webview.pushEvent(eventName);
+        }
+        // iOS: Use `window.webkit.messageHandlers.iOS.postMessage` to communicate with the iOS app
+        else if (
+          window.webkit &&
+          window.webkit.messageHandlers &&
+          window.webkit.messageHandlers.iOS
+        ) {
+          const message = { action: "pushEvent", eventName: eventName };
+          window.webkit.messageHandlers.iOS.postMessage(message);
+        }
+        // Web: Use CleverTap's event push method for web integration
+        else {
+          clevertap.event.push(eventName);
+        }
+      };
+
+      let profilepush = () => {
+        const profileData = {
+          Site: {
+            "Customer Type": "Silver",
+            "Preferred Language": "English",
+          },
+        };
+
+        // Android: Use `my_webview` to call the native interface
+        if (window.my_webview) {
+          my_webview.pushProfile(JSON.stringify(profileData));
+        }
+        // iOS: Use `window.webkit.messageHandlers.iOS.postMessage` to communicate with the iOS app
+        else if (
+          window.webkit &&
+          window.webkit.messageHandlers &&
+          window.webkit.messageHandlers.iOS
+        ) {
+          const message = { action: "profilePush", properties: profileData };
+          window.webkit.messageHandlers.iOS.postMessage(message);
+        }
+        // Web: Use CleverTap's profile push method for web integration
+        else {
+          clevertap.profile.push(profileData);
+        }
+      };
+
+      let ipfalse = () => {
+        clevertap.privacy.push({ useIP: false });
+        clevertap.event.push("useIP: false");
+      };
+
+      let iptrue = () => {
+        clevertap.privacy.push({ useIP: true });
+        clevertap.event.push("useIP: true");
+      };
+
+      let showctid = () => {
+        if (window.my_webview) {
+          var ctid = my_webview.getCleverTapID();
+        } else {
+          var ctid = clevertap.getCleverTapID();
+        }
+        document.getElementById("test").innerHTML = ctid;
+      };
+
+      let clear = () => {
+        clevertap.clear();
+        var cookies = document.cookie.split(";");
+
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i];
+          var eqPos = cookie.indexOf("=");
+          var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+
+          // Set the expiry date of the cookie to a past date
+          document.cookie =
+            name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+        }
+      };
+
+      let pushnotif = () => {
+        clevertap.notifications.push({
+          titleText: "Would you like to receive Push Notifications?",
+          bodyText:
+            "We promise to only send you relevant content and give you updates on your transactions",
+          okButtonText: "Sign me up!",
+          rejectButtonText: "No thanks",
+          okButtonColor: "#F28046",
+          askAgainTimeInSeconds: 5,
         });
+      };
 
+      // Add other functions like profilepush(), ipfalse(), iptrue(), etc. similarly
     </script>
 
-</body>
+    <script>
+      function handleTabClosing(event) {
+        clevertap.event.push("Web Exit");
+        event.returnValue = "Are you sure you want to leave this page?";
+      }
+      window.addEventListener("beforeunload", handleTabClosing);
 
+      const closeButton = document.querySelector(".close-button");
+      closeButton.addEventListener("click", () => {
+        // Remove the beforeunload event listener when the button is clicked
+        window.removeEventListener("beforeunload", handleTabClosing);
+        // Close the tab (this may not work in all browsers)
+        window.close();
+      });
+    </script>
+  </body>
 </html>
