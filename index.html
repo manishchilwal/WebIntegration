@@ -156,10 +156,32 @@
     </style>
   </head>
   <body>
-    <div id="native">This is the native content.</div>
+    <div id="native">
+        This is the native content.
+    </div>
+
     <h1>Web Integration</h1>
 
-    <!-- Your form here -->
+    <form id="userInfoForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="identity">Identity:</label>
+        <input type="text" id="identity" name="identity" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="number">Phone No:</label>
+        <input type="number" id="number" name="number" required>
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="M">M</option>
+            <option value="F">F</option>
+        </select>
+    </form>
+    <br>
 
     <div class="button-container">
       <button class="button" onclick="pushEvent()">Push Event</button>
