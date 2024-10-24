@@ -10,8 +10,8 @@
         var clevertap = { event: [], profile: [], account: [], onUserLogin: [], notifications: [], privacy: [] };
         // replace with the CLEVERTAP_ACCOUNT_ID with the actual ACCOUNT ID value from your Dashboard -> Settings page
         clevertap.account.push({ "id": "R5K-486-ZW7Z" });
-        clevertap.privacy.push({ optOut: false }); //set the flag to true, if the user of the device opts out of sharing their data
-        clevertap.privacy.push({ useIP: false }); //set the flag to true, if the user agrees to share their IP data
+        clevertap.privacy.push({ optOut: false }); // set the flag to true, if the user of the device opts out of sharing their data
+        clevertap.privacy.push({ useIP: false }); // set the flag to true, if the user agrees to share their IP data
         clevertap.dismissSpamControl = true;
         (function () {
             var wzrk = document.createElement('script');
@@ -22,6 +22,7 @@
             s.parentNode.insertBefore(wzrk, s);
         })();
     </script>
+
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -43,7 +44,12 @@
         };
 
         function nativeDisplay() {
-            clevertap.event.push("Native Display");
+            if (window.your_variable_name_here) {
+                // Call Android interface             
+                my_webview.pushEvent("Native Display");
+            } else {
+                clevertap.event.push("Native Display");
+            }
         }
         document.addEventListener("DOMContentLoaded", nativeDisplay);
 
@@ -51,6 +57,7 @@
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
     </script>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -155,7 +162,7 @@
 
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
-        
+
         <label for="number">Phone No:</label>
         <input type="number" id="number" name="number" required>
 
@@ -164,97 +171,116 @@
             <option value="M">M</option>
             <option value="F">F</option>
         </select>
-    </form><br>
+    </form>
+    <br>
 
     <div class="button-container">
         <button class="button" id="event" onclick="pushEvent()">Push Event</button>
         <button class="button" id="login" onclick="onuserlogin()">OnUserLogin</button>
         <button class="button" id="ipfalse" onclick="ipfalse()">IP FALSE</button>
         <button class="button" id="iptrue" onclick="iptrue()">IP TRUE</button>
-        <button class="button" id="login" onclick="profilepush()">ProfilePush</button>
+        <button class="button" id="profilepush" onclick="profilepush()">ProfilePush</button>
         <button class="button" id="loc" onclick="pushnotif()">Enable Notification</button>
-        <button class="button" id="showid" onclick="showctid()">Show CT ID </button>
-        <button class="button" id="clearid" onclick="clear()">Clear CT ID </button>
-        <button class="button" id="popup" onclick="popup()">Web Pop-up </button>
-        <button class="button" id="push" onclick="pushnotification()">Web Push </button>
+        <button class="button" id="showid" onclick="showctid()">Show CT ID</button>
+        <button class="button" id="clearid" onclick="clear()">Clear CT ID</button>
+        <button class="button" id="popup" onclick="popup()">Web Pop-up</button>
+        <button class="button" id="push" onclick="pushnotification()">Web Push</button>
     </div>
     <h2 id="test"></h2>
 
-
     <script>
-        
-
         let onuserlogin = () => {
-            var name, identity, email, gender,phone;
-            name = document.getElementById('name').value;
-            identity = document.getElementById('identity').value;
-            email = document.getElementById('email').value;
-            phone = document.getElementById('number').value;
-            gender = document.getElementById('gender').value;
-            clevertap.onUserLogin.push({
+            const userInfo = {
                 "Site": {
-                    "Name": name,
-                    "Identity": identity,
-                    "Email": email,
-                    "Phone": phone,
-                    "Gender": gender,
+                    "Name": document.getElementById('name').value,
+                    "Identity": document.getElementById('identity').value,
+                    "Email": document.getElementById('email').value,
+                    "Phone": document.getElementById('number').value,
+                    "Gender": document.getElementById('gender').value,
                     "Sign Up": new Date(),
                     "MSG-email": true,
                     "MSG-push": true,
                     "MSG-sms": true,
                     "MSG-whatsapp": true,
                 },
-            });
+            };
+            if (window.my_webview) {
+                my_webview.onUserLogin(userInfo);
+            } else {
+                clevertap.onUserLogin.push(userInfo);
+            }
         };
 
         let pushEvent = () => {
-            clevertap.event.push("Products Viewed", {
-                "Product name": "Casio Chronograph Watch",
-                "Category": "Mens Accessories",
-                "Price": 59.99,
-                "Date": new Date()
-            });
+            if (window.my_webview) {
+                my_webview.pushEvent("Products Viewed", {
+                    "Product name": "Casio Chronograph Watch",
+                    "Category": "Mens Accessories",
+                    "Price": 59.99,
+                    "Date": new Date()
+                });
+            } else {
+                clevertap.event.push("Products Viewed", {
+                    "Product name": "Casio Chronograph Watch",
+                    "Category": "Mens Accessories",
+                    "Price": 59.99,
+                    "Date": new Date()
+                });
+            }
         };
 
         let popup = () => {
-            clevertap.event.push("Web Pop-up");
+            if (window.my_webview) {
+                my_webview.pushEvent("Web Pop-up");
+            } else {
+                clevertap.event.push("Web Pop-up");
+            }
         };
 
         let pushnotification = () => {
-            clevertap.event.push("Web Push Notification");
+            if (window.my_webview) {
+                my_webview.pushEvent("Web Push Notification");
+            } else {
+                clevertap.event.push("Web Push Notification");
+            }
         };
-
 
         let ipfalse = () => {
-
             clevertap.privacy.push({ useIP: false });
-            clevertap.event.push("useIP: false ");
-
-
+            clevertap.event.push("useIP: false");
         };
+
         let iptrue = () => {
             clevertap.privacy.push({ useIP: true });
-            clevertap.event.push("useIP: true ");
-
+            clevertap.event.push("useIP: true");
         };
 
-
-
         let profilepush = () => {
+            if (window.your_variable_name_here) {
+                // Call Android interface             
+                my_webview.pushProfile({
+                    "Site": {
+                        "Customer Type": "Silver",
+                        "Prefered Language": "English"
+                    }
+                });
+            }
             clevertap.profile.push({
                 "Site": {
                     "Customer Type": "Silver",
                     "Prefered Language": "English"
                 }
             });
-        }
-
-        let showctid = () => {
-            var ctid = clevertap.getCleverTapID();
-            document.getElementById("test").innerHTML = ctid;
         };
 
-
+        let showctid = () => {
+            if (window.my_webview) {
+                var ctid = my_webview.getCleverTapID();
+            } else {
+                var ctid = clevertap.getCleverTapID();
+            }
+            document.getElementById("test").innerHTML = ctid;
+        };
 
         let clear = () => {
             clevertap.clear();
@@ -268,7 +294,6 @@
                 // Set the expiry date of the cookie to a past date
                 document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
             }
-
         };
     </script>
 
@@ -305,7 +330,6 @@
 
     </script>
 
-    </div>
 </body>
 
 </html>
