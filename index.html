@@ -223,34 +223,40 @@
       }
 
       function onuserlogin() {
-        const userInfo = {
-          Site: {
-            Name: document.getElementById("name").value,
-            Identity: document.getElementById("identity").value,
-            Email: document.getElementById("email").value,
-            Phone: document.getElementById("number").value,
-            Gender: document.getElementById("gender").value,
-            "Sign Up": new Date(),
-            "MSG-email": true,
-            "MSG-push": true,
-            "MSG-sms": true,
-            "MSG-whatsapp": true,
-          },
-        };
-        if (window.my_webview) {
-          my_webview.onUserLogin(JSON.stringify(userInfo));
-        } else if (
-          window.webkit &&
-          window.webkit.messageHandlers &&
-          window.webkit.messageHandlers.iOS
-        ) {
-          window.webkit.messageHandlers.iOS.postMessage({
-            action: "onUserLogin",
-            properties: userInfo,
-          });
-        } else {
-          clevertap.onUserLogin.push(userInfo);
-        }
+          // Collect user data into a dictionary
+          const userData = {
+              Name: document.getElementById("name").value,
+              Identity: document.getElementById("identity").value,
+              Email: document.getElementById("email").value,
+              Phone: document.getElementById("number").value,
+              Gender: document.getElementById("gender").value,
+              "Sign Up": new Date(),
+              "MSG-email": true,
+              "MSG-push": true,
+              "MSG-sms": true,
+              "MSG-whatsapp": true,
+          };
+      
+          // Create the data structure with "Site" key for normal web working
+          const siteData = {
+              Site: userData
+          };
+      
+          // Handle for Android
+          if (window.my_webview) {
+              my_webview.onUserLogin(JSON.stringify(userData));
+          
+          // Handle for iOS
+          } else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.iOS) {
+              window.webkit.messageHandlers.iOS.postMessage({
+                  action: "onUserLogin",
+                  properties: userData
+              });
+          
+          // Handle for web
+          } else {
+              clevertap.onUserLogin.push(siteData);
+          }
       }
 
       function popup() {
@@ -293,31 +299,36 @@
       };
 
       let profilepush = () => {
-        const profileData = {
-          Site: {
-            "Customer Type": "Silver",
-            "Preferred Language": "English",
-          },
-        };
-
-        // Android: Use `my_webview` to call the native interface
-        if (window.my_webview) {
-          my_webview.pushProfile(JSON.stringify(profileData));
-        }
-        // iOS: Use `window.webkit.messageHandlers.iOS.postMessage` to communicate with the iOS app
-        else if (
-          window.webkit &&
-          window.webkit.messageHandlers &&
-          window.webkit.messageHandlers.iOS
-        ) {
-          const message = { action: "profilePush", properties: profileData };
-          window.webkit.messageHandlers.iOS.postMessage(message);
-        }
-        // Web: Use CleverTap's profile push method for web integration
-        else {
-          clevertap.profile.push(profileData);
-        }
+          // Data to be pushed for the profile
+          const profileData = {
+              "Customer Type": "Silver",
+              "Preferred Language": "English",
+          };
+      
+          // Web: CleverTap requires "Site" key
+          const siteProfileData = {
+              Site: profileData
+          };
+      
+          // Android: Use `my_webview` to call the native interface
+          if (window.my_webview) {
+              my_webview.pushProfile(JSON.stringify(profileData));
+      
+          // iOS: Use `window.webkit.messageHandlers.iOS.postMessage` to communicate with the iOS app
+          } else if (
+              window.webkit &&
+              window.webkit.messageHandlers &&
+              window.webkit.messageHandlers.iOS
+          ) {
+              const message = { action: "profilePush", properties: profileData };
+              window.webkit.messageHandlers.iOS.postMessage(message);
+      
+          // Web: Use CleverTap's profile push method for web integration
+          } else {
+              clevertap.profile.push(siteProfileData);
+          }
       };
+
 
       let ipfalse = () => {
         clevertap.privacy.push({ useIP: false });
