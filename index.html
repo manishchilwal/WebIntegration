@@ -18,6 +18,12 @@
       clevertap.privacy.push({ optOut: false });
       clevertap.privacy.push({ useIP: false });
       clevertap.dismissSpamControl = true;
+
+      clevertap.notifications.push({
+        inbox: {
+          inboxSelector: "#CTwebinbox",
+        },
+      });
       (function () {
         var wzrk = document.createElement("script");
         wzrk.type = "text/javascript";
@@ -153,9 +159,36 @@
         text-align: center;
         margin-bottom: 20px;
       }
+
+      #CTwebinbox {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: #4caf50;
+        color: white;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        z-index: 9999;
+        user-select: none;
+      }
+
+      ct-web-inbox {
+        font-family: Arial, sans-serif;
+        --inbox-width: 400px;
+        --inbox-height: 546px;
+      }
     </style>
   </head>
   <body>
+    <div id="CTwebinbox" title="Web Inbox">🔔</div>
+
     <div id="native">
         This is the native content.
     </div>
@@ -195,7 +228,14 @@
       <button class="button" onclick="clear()">Clear CT ID</button>
       <button class="button" onclick="popup()">Web Pop-up</button>
       <button class="button" onclick="pushnotification()">Web Push</button>
+      <button class="button" onclick="inboxCount()">Inbox Count</button>
+      <button class="button" onclick="inboxUnreadCount()">Unread Count</button>
+      <button class="button" onclick="getAllInbox()">All Inbox Msgs</button>
+      <button class="button" onclick="getUnreadInbox()">Unread Msgs</button>
+      <button class="button" onclick="markAllRead()">Mark All Read</button>
     </div>
+
+    <pre id="inboxOutput" style="background:#fff;padding:10px;margin-top:20px;border-radius:5px;max-height:300px;overflow:auto;white-space:pre-wrap;word-break:break-all;"></pre>
 
     <script>
       function pushEvent() {
@@ -380,6 +420,32 @@
       };
 
       // Add other functions like profilepush(), ipfalse(), iptrue(), etc. similarly
+
+      function printInbox(label, value) {
+        const out = document.getElementById("inboxOutput");
+        out.textContent = label + "\n" + (typeof value === "string" ? value : JSON.stringify(value, null, 2));
+      }
+
+      function inboxCount() {
+        printInbox("Inbox Message Count:", clevertap.getInboxMessageCount());
+      }
+
+      function inboxUnreadCount() {
+        printInbox("Inbox Unread Count:", clevertap.getInboxMessageUnreadCount());
+      }
+
+      function getAllInbox() {
+        printInbox("All Inbox Messages:", clevertap.getAllInboxMessages());
+      }
+
+      function getUnreadInbox() {
+        printInbox("Unread Inbox Messages:", clevertap.getUnreadInboxMessages());
+      }
+
+      function markAllRead() {
+        clevertap.markReadAllInboxMessage();
+        printInbox("Status:", "All messages marked as read.");
+      }
     </script>
 
     <script>
